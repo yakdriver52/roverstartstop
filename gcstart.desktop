@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Terminal=true
+Name=GCStart
+Exec=/home/versatol/gcstart
+Icon=/home/versatol/dronefly.svg

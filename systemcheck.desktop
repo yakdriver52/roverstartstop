@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Terminal=true
+Name=SystemCheck
+Exec=/home/versatol/systemcheck
+Icon=/home/versatol/checkmark.svg

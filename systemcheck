@@ -1,0 +1,111 @@
+#!/bin/bash
+
+# Preflight check of system components
+
+. ./config.sh
+
+# Ensure aircraft is powered up and on the network.
+if ! ping -c 1 -W 3 $AIRCRAFT_IP &>/dev/null
+then
+  echo
+  echo "${red}Cannot communicate with aircraft!${reset}"
+  echo
+  echo "Please check the following and try again:"
+  echo "1. Is the aircraft powered on?"
+  echo "2. Is it connected to the network?"
+  echo "3. Is the AIRCRAFT_IP address correct in config.sh?"
+  echo
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
+fi
+
+# Ensure server is powered up and on the network.
+if ! ping -c 1 -W 3 $SERVER_IP &>/dev/null
+then
+  echo
+  echo "${red}Cannot communicate with server!${reset}"
+  echo
+  echo "Please check the following and try again:"
+  echo "1. Is the server powered on?"
+  echo "2. Is it connected to the network?"
+  echo "3. Is the SERVER_IP address correct in config.sh?"
+  echo
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
+fi
+
+# Ensure the SERVER_USER is correct.
+if ! ssh $SERVER_USER@$SERVER_IP "ls" >/dev/null
+then
+  echo
+  echo "${red}Unable to log in to server!${reset}"
+  echo
+  echo "Please check the SERVER_USER line in config.sh and try again."
+  echo
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
+fi
+
+# Ensure the AIRCRAFT_USER is correct.
+if ! ssh $AIRCRAFT_USER@$AIRCRAFT_IP "ls" >/dev/null
+then
+  echo
+  echo "${red}Unable to log in to aircraft!${reset}"
+  echo
+  echo "Please check the AIRCRAFT_USER line in config.sh and try again."
+  echo
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
+fi
+
+## Check available drive space on server. Video records at approximately 
+## 12MB/minute.
+SPACE=`ssh $SERVER_USER@$SERVER_IP "df -t ext4 --output=source,avail -B12M"`
+AVAIL1=`echo $SPACE|cut -f 4 -d ' ' -`
+AVAIL2=`echo $SPACE|cut -f 6 -d ' ' -`
+echo
+echo "Primary drive has space for approximately $AVAIL1 minutes of video storage."
+if [ $AVAIL1 -lt 60 ];
+then
+  echo
+  echo "${red}Please free up disk space before deploying on a mission!${reset}"
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
+fi
+if [ "$AVAIL2" == "" ];
+then
+  echo
+  echo "${red}No removable drive present!${reset}"
+  echo
+  echo "Video will be stored on the primary drive and can be copied later."
+  echo "If this is not OK, please connect a removable drive and try again." 
+  echo "Is this OK? [Y/n]"
+  read RESP
+  if [ "$RESP" == "n" ] || [ "$RESP" == "N" ];
+  then
+    exit 1
+  fi
+else
+  echo "Removable drive has space for approximately $AVAIL2 minutes of video storage."
+fi
+
+## Check ALL THE THINGS!  What else could possibly go wrong?
+
+
+# If we get to this point, everything checks out fine.
+
+echo
+echo "${green}All system tests passed.${reset}"
+echo
+
+exit 0

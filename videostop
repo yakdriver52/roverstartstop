@@ -1,0 +1,16 @@
+#!/bin/bash
+
+. ./config.sh
+
+ssh $SERVER_USER@$SERVER_IP "ps -ef|grep gstd|grep -v grep" >/dev/null
+
+if [ $? -eq 0 ];
+then
+  $GSTD_CLIENT event_eos versatol >/dev/null 2>/dev/null
+  $GSTD_CLIENT bus_filter versatol eos >/dev/null 2>/dev/null
+  $GSTD_CLIENT bus_read versatol >/dev/null 2>/dev/null
+  $GSTD_CLIENT pipeline_stop versatol >/dev/null 2>/dev/null
+  $GSTD_CLIENT pipeline_delete versatol >/dev/null 2>/dev/null
+
+  ssh $SERVER_USER@$SERVER_IP "pkill -9 gstd"
+fi

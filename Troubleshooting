@@ -1,0 +1,35 @@
+1. Cannot communicate with aircraft or server.
+
+  Check power.
+  Check network cabling.
+  Check for proper IP address settings in config.sh compared to the output of 
+  'ip address' on the machine in question.
+
+2. Cannot log in to aircraft or server.
+
+  Check USER settings in config.sh.
+  Server username is 'gcs'.
+  I do not know what the username is on the aircraft.
+
+3. Primary drive has less than 60 minutes of video storage space (7200 MB).
+
+  Delete old mission directories using 'rm -rf 20*'.
+
+4. No removable drive present.
+
+  This is a warning. The system can run without it, but we notify in case
+  it had been removed and not reconnected.
+
+5. Failed to start ROS on aircraft.
+
+  I do not know why this would fail.
+
+6. GStreamer Daemon is not running.
+
+  This should only fail if gtsd hasn't been installed.
+
+7. Failed to create a video pipeline or start video recording.
+
+  This is rare and most commonly caused by a problem with gstreamer (network
+    problems would have been detected before this).
+  Run GCStop to shutdown gstreamer and then try again.

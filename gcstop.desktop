@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Terminal=true
+Name=GCStop
+Exec=/home/versatol/gcstop
+Icon=/home/versatol/droneland.svg

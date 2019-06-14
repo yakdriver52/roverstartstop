@@ -1,0 +1,77 @@
+_PACKAGE CONTENTS_
+gcstart  -- Starts a mission
+gcstop  -- Ends a mission
+videostop  -- Stops video recording on server
+systemcheck  -- Checks system components for common problems
+config.sh  -- Users and IPs of the server, aircraft, and encoder.
+serverstart.sh  -- Starts the Gstreamer daemon
+rosstart.sh  -- Starts ROS on the aircraft
+gcstart.desktop  -- GCStart, GCStop, and SystemCheck files for Launcher
+gcstop.desktop
+systemcheck.desktop
+dronefly.svg  -- Icons for the Launcher
+droneland.svg
+checkmark.svg
+
+This attribution is required for using the icons.
+Icons made by Roundicons and srip from www.flaticon.com are licensed by 
+CC 3.0 BY.
+
+_SET UP_
+
+Install Gstreamer Daemon (gstd) on the server per these instructions:
+https://developer.ridgerun.com/wiki/index.php?title=GStreamer_Daemon_-_Building_GStreamer_Daemon
+
+The three computers involved (aircraft, server, and GCS) need to communicate
+with each other without human involvement. To do so, they need to share
+their public ssh keys with each other. On each machine, run
+'ssh-keygen -b 4096'. This should only be done once and will produce an 
+id_rsa.pub file in ~/.ssh that will look something like:
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQD6F6vKR3Nvb4zpyoO8zNgy1KIc4Ud7ezGucBabuAAC2JfmM4W7WpuZ6OLIawVyJSOcKAeOk36VNn1Sgm6Dhh7EOYW7eLbho9JDt96pq9v0kjJSuok4wM7deLFicI0PbltbWQZMXyelKH0oeRMGHzgmQdRv0L1rrV3njuIR649TWltoeNU1yqgyrTV/p+EGt2u3QZx4AVHs039KZd0Vf8mhNt2vmbfdalJtcW6LqAsmxOAHZYuMIoqNZ85mrxNIP4s2ZNkH8gR8/xsU2NKSHePI3VB43l+mn0gr+lj6Bg+/PCUMINQ0CFsJ4Y0MlyZAWLkR6zM6aNAZzlcySBFUA1eURNrsw6Nou8UFrdy6bIdeKNWh4nKJDpOURecoA/OOYq8BJ1X/YCiTlUuH5fyvn1vIKHEpOkGfNcgRWBLY+d//Qsc+SA2sBM+ECmMqpNxz1gtH6hGtt2Glqt49xAKf5y+9ypO7Ofnmw2CxJcEkuYRD+b8n3IcHUokOs8reubnq6k1fgzX5esveRbHtktigVpTSqAb5bKuBQnepRqxqBAjp0uhfZVgV6USSQS9sj556uwLLg95sU0/3zwygfqDEfz9tWy1dXNTMYHTNF7hVki30vnOMV3Rz/x2nHlHBVlbWYWoePaEcKmfGLWnOlFyrqzwP6n9K4mhmYT+r9ysmEgEFLw== gcs@GCS-BENCH-8400
+That line needs to be added to ~/.ssh/authorized_hosts file on the other two 
+machines. The easiest way to do that is copying and pasting between three
+terminal windows, each connected to one machine.
+
+Edit .bashrc on the three machines and add these 3 lines at the bottom:
+export ROS_MASTER_URI="http://<IP of aircraft>:11311"
+export ROS_HOSTNAME=<IP of machine>
+export PATH:$PATH:.
+Exit the editor. Type '. .bashrc' to inherit the new settings.
+
+Bring up QGC and go to general settings -> Video Source. Select "RTSP Video 
+Stream" from the Source dropdown. Enter 
+"rtsp://192.168.1.45/axis-media/media.amp" in the RTSP URL box. NOTE: The IP 
+address of the encoder may be different. This only needs to be done once 
+unless a different aircraft is used (the encoder IP may be different). Exit QGC.
+
+The three desktop files need to be moved to ~/.local/share/applications on the 
+GCS. Once in place, use the File Browser to navigate to that directory and drag 
+them to the launcher on the left of the desktop. You will need to select
+View->Show Hidden Files to see the .local directory.
+
+Edit config.sh on GCS to match the IPs and users of the different machines. 
+This only needs to be done on the GCS and it will copy it to the server and
+aircraft each time GCStart is run. 
+
+All scripts are installed on the GCS in the home directory of the versatol user.
+The scripts gcstart, gcstop, videostop, systemcheck, and config.sh run on the 
+GCS.
+The script serverstart.sh runs on the server. It is copied into place by 
+gcstart.
+The script rosstart.sh runs on the vehicle companion computer. It is also 
+copied into place by gcstart.
+
+
+_RUNNING_
+
+Before leaving headquarters, it is recommended to run SystemCheck to ensure
+all components are in good shape. This is also run automatically in GCStart
+when starting a mission.
+To begin a mission, click on the GCStart icon in the launcher and follow the
+instructions in the terminal. QGroundControl will be brought to the foreground 
+after everything has started.
+To begin recording video, return to the terminal and hit ENTER. Video can be 
+stopped manually by running ./videostop or automatically when gcstop is run.
+To end a mission, click on the GCStop icon in the launcher. Files will be moved 
+into a directory named for the date/time at the start of the mission and the 
+user will be notified when it is safe to power down or start another mission.

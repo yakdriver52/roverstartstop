@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# The only errors we might encounter here are in the file moving section.
+
+# Get IPs and users
+. ./config.sh
+
+DATETIME=`cat missionstartdt`
+
+# Stop ROS on aircraft
+echo "Stopping aircraft..."
+ssh $AIRCRAFT_USER@$AIRCRAFT_IP "pkill -2 record"
+if [ $SIMULATED -eq 0 ];
+then
+  ssh $AIRCRAFT_USER@$AIRCRAFT_IP "killall -2 roslaunch"
+fi
+ssh $AIRCRAFT_USER@$AIRCRAFT_IP "pkill -2 roscore"
+echo "Done."
+
+pkill -9 QGroundControl
+pkill -2 rqt
+
+if [ $SIMULATED -eq 0 ];
+then
+  scp *.tlog $SERVER_USER@$SERVER_IP:$DATETIME
+  rm *.tlog
+fi
+
+echo "Stopping server. Please wait for files to be moved into the $DATETIME directory on the server..."
+
+./videostop
+
+ssh $SERVER_USER@$SERVER_IP "mkdir $DATETIME"
+ssh $SERVER_USER@$SERVER_IP "mv $DATETIME.mp4 $DATETIME"
+BAGFILE=`ssh $AIRCRAFT_USER@$AIRCRAFT_IP "ls *.bag"`
+scp $AIRCRAFT_USER@$AIRCRAFT_IP:$BAGFILE . >/dev/null
+ssh $AIRCRAFT_USER@$AIRCRAFT_IP "rm *.bag" 
+scp $BAGFILE $SERVER_USER@$SERVER_IP:$DATETIME/ >/dev/null
+rm $BAGFILE
+
+echo "Move finished; files are stored in the $DATETIME directory on the server."
+echo "Components can be powered off or another mission may be started."
+
+echo
+echo "Press ENTER to exit this window."
+read ENTER
+
+exit 0
