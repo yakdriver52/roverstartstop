@@ -19,6 +19,9 @@ then
   echo "Press ENTER to exit this window."
   read ENTER
   exit 1
+else
+  echo
+  echo "${green}Aircraft is powered on and connected to the network.${reset}"
 fi
 
 # Ensure server is powered up and on the network.
@@ -36,6 +39,9 @@ then
   echo "Press ENTER to exit this window."
   read ENTER
   exit 1
+else
+  echo
+  echo "${green}Server is powered on and connected to the network.${reset}"
 fi
 
 # Ensure the SERVER_USER is correct.
@@ -70,9 +76,8 @@ fi
 ## 12MB/minute.
 SPACE=`ssh $SERVER_USER@$SERVER_IP "df -t ext4 --output=source,avail -B12M"`
 AVAIL1=`echo $SPACE|cut -f 4 -d ' ' -`
-AVAIL2=`echo $SPACE|cut -f 6 -d ' ' -`
-echo
-echo "Primary drive has space for approximately $AVAIL1 minutes of video storage."
+SPACE=`ssh $SERVER_USER@$SERVER_IP "df -t vfat --output=source,avail -B12M"`
+AVAIL2=`echo $SPACE|cut -f 4 -d ' ' -`
 if [ $AVAIL1 -lt 60 ];
 then
   echo
@@ -81,6 +86,9 @@ then
   echo "Press ENTER to exit this window."
   read ENTER
   exit 1
+else
+  echo
+  echo "${green}Primary drive has space for approximately $AVAIL1 minutes of video storage.${reset}"
 fi
 if [ "$AVAIL2" == "" ];
 then
@@ -95,8 +103,31 @@ then
   then
     exit 1
   fi
+elif [ $AVAIL2 -lt 30 ];
+then
+  echo
+  echo "${red}Please free up space on the removable drive before deploying on a mission!${reset}"
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
 else
-  echo "Removable drive has space for approximately $AVAIL2 minutes of video storage."
+  echo "${green}Removable drive has space for approximately $AVAIL2 minutes of video storage.${reset}"
+fi
+
+# Check the battery voltage
+VOLTAGE=`ssh $SERVER_USER@$SERVER_IP "/usr/local/ups/bin/upsc openups@localhost|grep battery.voltage: |cut -f 2 -d ' '"`
+if  ! echo "$VOLTAGE < 11.8"|bc >/dev/null
+then
+  echo
+  echo "${red}Battery voltage ($VOLTAGE) less than 11.8. Please charge before flying.${reset}"
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
+else
+  echo 
+  echo "${green}Battery voltage is acceptable.${reset}"
 fi
 
 ## Check ALL THE THINGS!  What else could possibly go wrong?
@@ -107,5 +138,7 @@ fi
 echo
 echo "${green}All system tests passed.${reset}"
 echo
+echo "Press ENTER to finish."
+read ENTER
 
 exit 0
