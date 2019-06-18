@@ -39,6 +39,20 @@ scp $BAGFILE $SERVER_USER@$SERVER_IP:$DATETIME/ >/dev/null
 rm $BAGFILE
 
 echo "Move finished; files are stored in the $DATETIME directory on the server."
+echo 
+DIR=`ssh $SERVER_USER@$SERVER_IP "df -t vfat --output=target"`
+if [ "$DIR" != "" ]; 
+then
+  echo "Would you like the files copied to the removable drive? [Y/n]"
+  read RESP
+  if [ "$RESP" != "n" ] && [ "$RESP" != "N" ];
+  then
+    if ssh $SERVER_USER@$SERVER_IP "cp -R $DATETIME $DIR" then
+      echo "Copied $DATETIME to removable drive."
+    fi
+fi
+
+echo
 echo "Components can be powered off or another mission may be started."
 
 echo
