@@ -80,16 +80,26 @@ SPACE=`ssh $SERVER_USER@$SERVER_IP "df -t vfat --output=source,avail -B12M"`
 AVAIL2=`echo $SPACE|cut -f 4 -d ' ' -`
 if [ $AVAIL1 -lt 60 ];
 then
+  echo "${red}Less than 60 minutes of video storage available.${reset}"
   echo
-  echo "${red}Please free up disk space before deploying on a mission!${reset}"
-  echo
-  echo "Press ENTER to exit this window."
-  read ENTER
-  exit 1
+  echo "Would you like old mission directories deleted automatically? [Y/n]"
+  read RESP
+  if [ "$RESP" == "n" ] || [ "$RESP" == "N" ]; 
+  then
+    echo
+    echo "${red}Please free up disk space manually before deploying on a mission!${reset}"
+    echo
+    echo "Press ENTER to exit this window."
+    read ENTER
+    exit 1
+  else
+    ssh $SERVER_USER@$SERVER_IP "rm -rf 20*"
+  fi
 else
   echo
   echo "${green}Primary drive has space for approximately $AVAIL1 minutes of video storage.${reset}"
 fi
+
 if [ "$AVAIL2" == "" ];
 then
   echo
@@ -105,18 +115,32 @@ then
   fi
 elif [ $AVAIL2 -lt 30 ];
 then
+  echo "${red}Less than 30 minutes of storage available on removable drive.${reset}"
   echo
-  echo "${red}Please free up space on the removable drive before deploying on a mission!${reset}"
-  echo
-  echo "Press ENTER to exit this window."
-  read ENTER
-  exit 1
+  echo "Would you like old mission directories deleted automatically? [Y/n]"
+  read RESP
+  if [ "$RESP" == "n" ] || [ "$RESP" == "N" ]; 
+  then
+    echo
+    echo "${red}Please free up disk space on the removable drive manually before deploying on a mission!${reset}"
+    echo
+    echo "Press ENTER to exit this window."
+    read ENTER
+    exit 1
+  else
+    DIR=ssh $SERVER_USER@$SERVER_IP "df -t vfat --output=target"
+    ssh $SERVER_USER@$SERVER_IP "rm -rf ${DIR}/20*"
+  fi
 else
   echo "${green}Removable drive has space for approximately $AVAIL2 minutes of video storage.${reset}"
 fi
 
 # Check the battery voltage
-VOLTAGE=`ssh $SERVER_USER@$SERVER_IP "/usr/local/ups/bin/upsc openups@localhost|grep battery.voltage: |cut -f 2 -d ' '"`
+# First start the UPS service
+ssh $SERVER_USER@$SERVER_IP "sudo chmod 0666 /dev/bus/usb/001/002" >/dev/null
+ssh $SERVER_USER@$SERVER_IP "sudo /usr/local/ups/sbin/upsdrvctl start" >/dev/null 2>/dev/null
+ssh $SERVER_USER@$SERVER_IP "sudo /usr/local/ups/sbin/upsd -u ups"  >/dev/null 2>/dev/null
+VOLTAGE=`ssh $SERVER_USER@$SERVER_IP "/usr/local/ups/bin/upsc openups@localhost|grep battery.voltage: |cut -f 2 -d ' '"` >/dev/null
 if  ! echo "$VOLTAGE < 11.8"|bc >/dev/null
 then
   echo
