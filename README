@@ -32,6 +32,11 @@ That line needs to be added to ~/.ssh/authorized_hosts file on the other two
 machines. The easiest way to do that is copying and pasting between three
 terminal windows, each connected to one machine.
 
+Some commands run on the server require sudo and we don't want to be prompted
+for a password each time one is executed. Run 'sudo visudo' and add the
+following line to the *bottom* of the file:
+gcs     ALL=(ALL)     NOPASSWD:ALL
+
 Edit .bashrc on the three machines and add these 3 lines at the bottom:
 export ROS_MASTER_URI="http://<IP of aircraft>:11311"
 export ROS_HOSTNAME=<IP of machine>
