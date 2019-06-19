@@ -28,7 +28,14 @@ fi
 
 echo "Stopping server. Please wait for files to be moved into the $DATETIME directory on the server..."
 
-./videostop
+# Video recording may have been stopped manually before gcstop runs. If gstd
+# is still running, we know to run videostop.
+rm pipelines
+ssh $SERVER_USER@$SERVER_IP "ps -ef|grep gstd|grep -v grep" >/dev/null
+if [ $? -eq 0 ];
+then
+  ./videostop
+fi
 
 ssh $SERVER_USER@$SERVER_IP "mkdir $DATETIME"
 ssh $SERVER_USER@$SERVER_IP "mv $DATETIME.mp4 $DATETIME"
@@ -40,16 +47,21 @@ rm $BAGFILE
 
 echo "Move finished; files are stored in the $DATETIME directory on the server."
 echo 
-DIR=`ssh $SERVER_USER@$SERVER_IP "df -t vfat --output=target"`
+DIR=`ssh $SERVER_USER@$SERVER_IP "df -t vfat --output=target|grep /"`
 if [ "$DIR" != "" ]; 
 then
   echo "Would you like the files copied to the removable drive? [Y/n]"
   read RESP
   if [ "$RESP" != "n" ] && [ "$RESP" != "N" ];
   then
-    if ssh $SERVER_USER@$SERVER_IP "cp -R $DATETIME $DIR" then
+    ssh $SERVER_USER@$SERVER_IP "sudo cp -R $DATETIME $DIR" 
+    if [ $? -eq 0 ];
+    then
       echo "Copied $DATETIME to removable drive."
+    else
+      echo "Copy failed, likely due to lack of space."
     fi
+  fi
 fi
 
 echo
