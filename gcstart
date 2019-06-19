@@ -3,7 +3,12 @@
 # Get IPs and users
 . ./config.sh
 
-./systemcheck
+./systemcheck gcstart
+
+if [ $? -ne 0 ];
+then
+  exit 1
+fi
 
 # Save the start date/time for gcstop and the server and aircraft start scripts
 DATETIME=`date +%Y-%m-%d-%H-%M`
