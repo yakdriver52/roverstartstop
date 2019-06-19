@@ -162,7 +162,10 @@ fi
 echo
 echo "${green}All system tests passed.${reset}"
 echo
-echo "Press ENTER to finish."
-read ENTER
+if [ -z $1 ];
+then
+  echo "Press ENTER to finish."
+  read ENTER
+fi
 
 exit 0
