@@ -128,8 +128,8 @@ then
     read ENTER
     exit 1
   else
-    DIR=ssh $SERVER_USER@$SERVER_IP "df -t vfat --output=target"
-    ssh $SERVER_USER@$SERVER_IP "rm -rf ${DIR}/20*"
+    DIR=`ssh $SERVER_USER@$SERVER_IP "df -t vfat --output=target"`
+    ssh $SERVER_USER@$SERVER_IP "sudo rm -rf ${DIR}/20*"
   fi
 else
   echo "${green}Removable drive has space for approximately $AVAIL2 minutes of video storage.${reset}"
