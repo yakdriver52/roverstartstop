@@ -1,0 +1,67 @@
+#!/bin/bash
+
+. ./config.sh
+
+DATETIME=`cat missionstartdt`
+if [ -z "$DATETIME" ];
+then
+  DATETIME=`date +%Y-%m-%d-%H-%M`
+fi
+
+ssh $SERVER_USER@$SERVER_IP "./serverstart.sh"
+sleep 1
+
+# Ensure gstreamer daemon is running
+$GSTD_CLIENT list_pipelines >pipelines
+RC=`grep code pipelines|cut -d ' ' -f 5 -`
+if [ "$RC" != "0," ];
+  then
+  echo "GStreamer Daemon is not running! Aborting."
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
+fi
+echo "${green}Done.${reset}"
+
+# Just in case there is a versatol pipeline still existing, delete it.
+$GSTD_CLIENT pipeline_delete versatol >/dev/null
+
+if [ $ENCODER == "axis" ];
+then
+  PIPELINE="pipeline_create versatol rtspsrc name=rs location=rtsp://$ENCODER_IP/axis-media/media.amp protocols=tcp ! decodebin ! x264enc ! mp4mux ! filesink location=/home/gcs/$DATETIME.mp4" 
+elif [ $ENCODER == "nvidia" ];
+then
+  PIPELINE="gst-launch-1.0 v4l2src device=/dev/video2 ! video/x-raw,format=YUY2,framerate=30/1,width=640,height=480 ! nvvidconv ! 'video/x-raw(memory:NVMM),format=NV12' ! filesink location=/home/gcs/$DATETIME.mp4"
+else
+  echo
+  echo "${red}Unknown encoder. Please set ENCODER in config.sh.${reset}"
+  exit 1
+fi
+# Create a pipeline from the aircraft to the server.
+if ! $GSTD_CLIENT $PIPELINE >/dev/null
+then
+  echo
+  echo "${red}Failed to create a video pipeline from aircraft to server.${reset}"
+  echo
+  echo "Please run GCStop and try again."
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
+fi
+
+# Transition from pause to play.
+if ! $GSTD_CLIENT pipeline_play versatol >/dev/null
+then
+  echo
+  echo "${red}Failed to start recording video.${reset}"
+  echo
+  echo "Please run GCStop and try again."
+  echo
+  echo "Press ENTER to exit this window."
+  read ENTER
+  exit 1
+fi
+
+echo "Recording video to $DATETIME.mp4 on the server."

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Terminal=true
+Name=StopVideo
+Exec=/home/versatol/videostop
+Icon=/home/versatol/videostop.svg

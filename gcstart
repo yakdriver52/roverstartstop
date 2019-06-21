@@ -30,59 +30,10 @@ ssh $SERVER_USER@$SERVER_IP "rm *.bag *.mp4 >/dev/null 2>/dev/null" >/dev/null
 scp missionstartdt $SERVER_USER@$SERVER_IP:missionstartdt >/dev/null
 scp config.sh $SERVER_USER@$SERVER_IP:config.sh >/dev/null
 scp serverstart.sh $SERVER_USER@$SERVER_IP:serverstart.sh >/dev/null
-ssh $SERVER_USER@$SERVER_IP "./serverstart.sh"
-sleep 1
 
-# Ensure gstreamer daemon is running
-$GSTD_CLIENT list_pipelines >pipelines
-RC=`grep code pipelines|cut -d ' ' -f 5 -`
-if [ "$RC" != "0," ];
-  then
-  echo "GStreamer Daemon is not running! Aborting."
-  echo
-  echo "Press ENTER to exit this window."
-  read ENTER
-  exit 1
-fi
-echo "${green}Done.${reset}"
 
 # Start QGC in background
 nohup ./QGroundControl.AppImage >/dev/null 2>/dev/null &
-
-echo "Video recording will begin when you press ENTER. Recording can be stopped manually using ./videostop or automatically during gcstop."
-read ENTER
-
-# Just in case there is a versatol pipeline still existing, delete it.
-$GSTD_CLIENT pipeline_delete versatol >/dev/null
-
-# Create a pipeline from the aircraft to the server.
-if ! $GSTD_CLIENT pipeline_create versatol rtspsrc name=rs location=rtsp://$ENCODER_IP/axis-media/media.amp protocols=tcp ! decodebin ! x264enc ! mp4mux ! filesink location=/home/gcs/$DATETIME.mp4 >/dev/null
-then
-  echo
-  echo "${red}Failed to create a video pipeline from aircraft to server.${reset}"
-  echo
-  echo "Please run GCStop and try again."
-  echo
-  echo "Press ENTER to exit this window."
-  read ENTER
-  exit 1
-fi
-
-# Transition from pause to play.
-if ! $GSTD_CLIENT pipeline_play versatol >/dev/null
-then
-  echo
-  echo "${red}Failed to start recording video.${reset}"
-  echo
-  echo "Please run GCStop and try again."
-  echo
-  echo "Press ENTER to exit this window."
-  read ENTER
-  exit 1
-fi
-
-echo "Recording video to $DATETIME.mp4 on the server."
-echo "Run GCStop to complete the mission."
 
 echo
 echo "Press ENTER to exit this window (safe to do while flying)."
