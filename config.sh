@@ -4,18 +4,18 @@
 # VEHICLE_USER=root ?????????????? richard's stuff
 # VEHICLE_TYPE=drone
 VEHICLE_TYPE=rover
-VEHICLE_IP=192.168.1.32
-VEHICLE_USER=gcs
+VEHICLE_IP=192.168.1.172
+VEHICLE_USER=dakoda
 
 #SERVER ON DRONE SUPPORTS VIDEO AND TELEOP
 #SERVER ON ROVER SUPPORTS ROS JOY
-SERVER_IP=192.168.1.32
-SERVER_USER=gcs
+SERVER_IP=192.168.1.172
+SERVER_USER=dakoda
 
 ENCODER_IP=192.168.1.45
 GSTD_CLIENT="gstd-client -q -a $SERVER_IP"
 # Change this to zero when using an actual vehicle
-SIMULATED=1
+SIMULATED=0
 # Only one of these should be uncommented
 ENCODER=axis
 # ENCODER=nvidia
