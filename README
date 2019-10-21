@@ -3,9 +3,9 @@ gcstart  -- Starts a mission
 gcstop  -- Ends a mission
 videostop  -- Stops video recording on server
 systemcheck  -- Checks system components for common problems
-config.sh  -- Users and IPs of the server, aircraft, and encoder.
+config.sh  -- Users and IPs of the server, VEHICLE, and encoder.
 serverstart.sh  -- Starts the Gstreamer daemon
-rosstart.sh  -- Starts ROS on the aircraft
+rosstart.sh  -- Starts ROS on the VEHICLE
 gcstart.desktop  -- GCStart, GCStop, and SystemCheck files for Launcher
 gcstop.desktop
 systemcheck.desktop
@@ -22,7 +22,7 @@ _SET UP_
 Install Gstreamer Daemon (gstd) on the server per these instructions:
 https://developer.ridgerun.com/wiki/index.php?title=GStreamer_Daemon_-_Building_GStreamer_Daemon
 
-The three computers involved (aircraft, server, and GCS) need to communicate
+The three computers involved (VEHICLE, server, and GCS) need to communicate
 with each other without human involvement. To do so, they need to share
 their public ssh keys with each other. On each machine, run
 'ssh-keygen -b 4096'. This should only be done once and will produce an 
@@ -38,7 +38,7 @@ following line to the *bottom* of the file:
 gcs     ALL=(ALL)     NOPASSWD:ALL
 
 Edit .bashrc on the three machines and add these 3 lines at the bottom:
-export ROS_MASTER_URI="http://<IP of aircraft>:11311"
+export ROS_MASTER_URI="http://<IP of VEHICLE>:11311"
 export ROS_HOSTNAME=<IP of machine>
 export PATH:$PATH:.
 Exit the editor. Type '. .bashrc' to inherit the new settings.
@@ -47,7 +47,7 @@ Bring up QGC and go to general settings -> Video Source. Select "RTSP Video
 Stream" from the Source dropdown. Enter 
 "rtsp://192.168.1.45/axis-media/media.amp" in the RTSP URL box. NOTE: The IP 
 address of the encoder may be different. This only needs to be done once 
-unless a different aircraft is used (the encoder IP may be different). Exit QGC.
+unless a different VEHICLE is used (the encoder IP may be different). Exit QGC.
 
 The three desktop files need to be moved to ~/.local/share/applications on the 
 GCS. Once in place, use the File Browser to navigate to that directory and drag 
@@ -56,7 +56,7 @@ View->Show Hidden Files to see the .local directory.
 
 Edit config.sh on GCS to match the IPs and users of the different machines. 
 This only needs to be done on the GCS and it will copy it to the server and
-aircraft each time GCStart is run. 
+VEHICLE each time GCStart is run. 
 
 All scripts are installed on the GCS in the home directory of the versatol user.
 The scripts gcstart, gcstop, videostop, systemcheck, and config.sh run on the 

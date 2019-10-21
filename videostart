@@ -38,11 +38,11 @@ else
   echo "${red}Unknown encoder. Please set ENCODER in config.sh.${reset}"
   exit 1
 fi
-# Create a pipeline from the aircraft to the server.
+# Create a pipeline from the VEHICLE to the server.
 if ! $GSTD_CLIENT $PIPELINE >/dev/null
 then
   echo
-  echo "${red}Failed to create a video pipeline from aircraft to server.${reset}"
+  echo "${red}Failed to create a video pipeline from VEHICLE to server.${reset}"
   echo
   echo "Please run GCStop and try again."
   echo

@@ -1,6 +1,7 @@
-#THIS FILE IS REPLACED BY start_$VEHICLE_TYPE.sh
 #!/bin/bash
+#THIS FILE IS REPLACED BY start_$VEHICLE_TYPE.sh
 
+#### currently not functioning. need drone requirements from Artur
 . ./config.sh
 
 . /opt/ros/kinetic/setup.bash

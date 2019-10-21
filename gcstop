@@ -7,14 +7,14 @@
 
 DATETIME=`cat missionstartdt`
 
-# Stop ROS on aircraft
-echo "Stopping aircraft..."
-ssh $AIRCRAFT_USER@$AIRCRAFT_IP "pkill -2 record"
+# Stop ROS on VEHICLE
+echo "Stopping VEHICLE..."
+ssh $VEHICLE_USER@$VEHICLE_IP "pkill -2 record"
 if [ $SIMULATED -eq 0 ];
 then
-  ssh $AIRCRAFT_USER@$AIRCRAFT_IP "killall -2 roslaunch"
+  ssh $VEHICLE_USER@$VEHICLE_IP "killall -2 roslaunch"
 fi
-ssh $AIRCRAFT_USER@$AIRCRAFT_IP "pkill -2 roscore"
+ssh $VEHICLE_USER@$VEHICLE_IP "pkill -2 roscore"
 echo "Done."
 
 pkill -9 QGroundControl
@@ -39,9 +39,9 @@ fi
 
 ssh $SERVER_USER@$SERVER_IP "mkdir $DATETIME"
 ssh $SERVER_USER@$SERVER_IP "mv $DATETIME.mp4 $DATETIME"
-BAGFILE=`ssh $AIRCRAFT_USER@$AIRCRAFT_IP "ls *.bag"`
-scp $AIRCRAFT_USER@$AIRCRAFT_IP:$BAGFILE . >/dev/null
-ssh $AIRCRAFT_USER@$AIRCRAFT_IP "rm *.bag" 
+BAGFILE=`ssh $VEHICLE_USER@$VEHICLE_IP "ls *.bag"`
+scp $VEHICLE_USER@$VEHICLE_IP:$BAGFILE . >/dev/null
+ssh $VEHICLE_USER@$VEHICLE_IP "rm *.bag" 
 scp $BAGFILE $SERVER_USER@$SERVER_IP:$DATETIME/ >/dev/null
 rm $BAGFILE
 

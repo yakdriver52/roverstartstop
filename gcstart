@@ -5,21 +5,21 @@
 
 ./systemcheck gcstart
 
-if [ $? -ne 0 ];
+if [ $? -ne 0 ]; #checking return value of system check exit state (1 or 0)
 then
   exit 1
 fi
 
-# Save the start date/time for gcstop and the server and aircraft start scripts
+# Save the start date/time for gcstop and the server and VEHICLE start scripts
 DATETIME=`date +%Y-%m-%d-%H-%M`
-echo $DATETIME >missionstartdt
+echo $DATETIME >missionstartdt #creates file missionstartdt for source later
 
-# Start ROS on aircraft
-echo "Initializing aircraft..."
-scp missionstartdt $AIRCRAFT_USER@$AIRCRAFT_IP:missionstartdt >/dev/null
-scp config.sh $AIRCRAFT_USER@$AIRCRAFT_IP:config.sh >/dev/null
-scp rosstart.sh $AIRCRAFT_USER@$AIRCRAFT_IP:rosstart.sh >/dev/null
-ssh $AIRCRAFT_USER@$AIRCRAFT_IP "./rosstart.sh" 
+# Start ROS on VEHICLE
+echo "Initializing VEHICLE..."
+scp missionstartdt $VEHICLE_USER@$VEHICLE_IP:missionstartdt >/dev/null
+scp config.sh $VEHICLE_USER@$VEHICLE_IP:config.sh >/dev/null
+scp rosstart.sh $VEHICLE_USER@$VEHICLE_IP:start_$VEHICLE_TYPE.sh >/dev/null
+ssh $VEHICLE_USER@$VEHICLE_IP "./start_$VEHICLE_TYPE.sh" #rosstart.sh was replaced by start_$VEHICLE_TYPE.sh (rover or drone as set in config.sh)
 sleep 2
 echo "${green}Done.${reset}"
 
@@ -30,7 +30,7 @@ ssh $SERVER_USER@$SERVER_IP "rm *.bag *.mp4 >/dev/null 2>/dev/null" >/dev/null
 scp missionstartdt $SERVER_USER@$SERVER_IP:missionstartdt >/dev/null
 scp config.sh $SERVER_USER@$SERVER_IP:config.sh >/dev/null
 scp serverstart.sh $SERVER_USER@$SERVER_IP:serverstart.sh >/dev/null
-
+ssh $SERVER_USER@$SERVER_IP "./serverstart_$VEHICLE_TYPE.sh" ### this was completely missing from the origional code
 
 # Start QGC in background
 nohup ./QGroundControl.AppImage >/dev/null 2>/dev/null &

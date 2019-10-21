@@ -1,15 +1,15 @@
-1. Cannot communicate with aircraft or server.
+1. Cannot communicate with VEHICLE or server.
 
   Check power.
   Check network cabling.
   Check for proper IP address settings in config.sh compared to the output of 
   'ip address' on the machine in question.
 
-2. Cannot log in to aircraft or server.
+2. Cannot log in to VEHICLE or server.
 
   Check USER settings in config.sh.
   Server username is 'gcs'.
-  I do not know what the username is on the aircraft.
+  I do not know what the username is on the VEHICLE.
 
 3. Primary drive has less than 60 minutes of video storage space (7200 MB).
 
@@ -20,7 +20,7 @@
   This is a warning. The system can run without it, but we notify in case
   it had been removed and not reconnected.
 
-5. Failed to start ROS on aircraft.
+5. Failed to start ROS on VEHICLE.
 
   I do not know why this would fail.
 

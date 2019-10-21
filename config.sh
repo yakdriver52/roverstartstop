@@ -1,11 +1,17 @@
 #!/bin/bash
 
-# AIRCRAFT_IP=192.168.1.10
-# AIRCRAFT_USER=root
-AIRCRAFT_IP=192.168.1.32
-AIRCRAFT_USER=gcs
+# VEHICLE_IP=192.168.1.10 ??????????? richard's stuff
+# VEHICLE_USER=root ?????????????? richard's stuff
+# VEHICLE_TYPE=drone
+VEHICLE_TYPE=rover
+VEHICLE_IP=192.168.1.32
+VEHICLE_USER=gcs
+
+#SERVER ON DRONE SUPPORTS VIDEO AND TELEOP
+#SERVER ON ROVER SUPPORTS ROS JOY
 SERVER_IP=192.168.1.32
 SERVER_USER=gcs
+
 ENCODER_IP=192.168.1.45
 GSTD_CLIENT="gstd-client -q -a $SERVER_IP"
 # Change this to zero when using an actual vehicle

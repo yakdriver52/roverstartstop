@@ -4,16 +4,16 @@
 
 . ./config.sh
 
-# Ensure aircraft is powered up and on the network.
-if ! ping -c 1 -W 3 $AIRCRAFT_IP &>/dev/null
+# Ensure VEHICLE is powered up and on the network.
+if ! ping -c 1 -W 3 $VEHICLE_IP &>/dev/null
 then
   echo
-  echo "${red}Cannot communicate with aircraft!${reset}"
+  echo "${red}Cannot communicate with VEHICLE!${reset}"
   echo
   echo "Please check the following and try again:"
-  echo "1. Is the aircraft powered on?"
+  echo "1. Is the VEHICLE powered on?"
   echo "2. Is it connected to the network?"
-  echo "3. Is the AIRCRAFT_IP address correct in config.sh?"
+  echo "3. Is the VEHICLE_IP address correct in config.sh?"
   echo
   echo
   echo "Press ENTER to exit this window."
@@ -21,7 +21,7 @@ then
   exit 1
 else
   echo
-  echo "${green}Aircraft is powered on and connected to the network.${reset}"
+  echo "${green}VEHICLE is powered on and connected to the network.${reset}"
 fi
 
 # Ensure server is powered up and on the network.
@@ -58,13 +58,13 @@ then
   exit 1
 fi
 
-# Ensure the AIRCRAFT_USER is correct.
-if ! ssh $AIRCRAFT_USER@$AIRCRAFT_IP "ls" >/dev/null
+# Ensure the VEHICLE_USER is correct.
+if ! ssh $VEHICLE_USER@$VEHICLE_IP "ls" >/dev/null
 then
   echo
-  echo "${red}Unable to log in to aircraft!${reset}"
+  echo "${red}Unable to log in to VEHICLE!${reset}"
   echo
-  echo "Please check the AIRCRAFT_USER line in config.sh and try again."
+  echo "Please check the VEHICLE_USER line in config.sh and try again."
   echo
   echo
   echo "Press ENTER to exit this window."
