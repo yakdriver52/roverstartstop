@@ -1,11 +1,13 @@
-_PACKAGE CONTENTS_
-gcstart  -- Starts a mission
-gcstop  -- Ends a mission
+# Ground Control Start and Stop Scripts for Tunnel Drone and Rover
+
+## PACKAGE CONTENTS
+gcstart  -- Runs a system check followed by running the start scripts for the vehicle type specified in the config
+gcstop  -- Shuts down all tasks that were created when gcstart was run
 videostop  -- Stops video recording on server
 systemcheck  -- Checks system components for common problems
 config.sh  -- Users and IPs of the server, VEHICLE, and encoder.
-serverstart.sh  -- Starts the Gstreamer daemon
-rosstart.sh  -- Starts ROS on the VEHICLE
+serverstart_$VEHICLE_TYPE.sh  -- Starts the server script for the VEHICLE_TYPE.
+start_$VEHICLE_TYPE.sh  -- Starts the script to run the commands for the VEHICLE_TYPE
 gcstart.desktop  -- GCStart, GCStop, and SystemCheck files for Launcher
 gcstop.desktop
 systemcheck.desktop
@@ -13,35 +15,69 @@ dronefly.svg  -- Icons for the Launcher
 droneland.svg
 checkmark.svg
 
+### Licensing
 This attribution is required for using the icons.
 Icons made by Roundicons and srip from www.flaticon.com are licensed by 
 CC 3.0 BY.
 
-_SET UP_
+## Setup
 
+### Gstreamer (optional)
 Install Gstreamer Daemon (gstd) on the server per these instructions:
 https://developer.ridgerun.com/wiki/index.php?title=GStreamer_Daemon_-_Building_GStreamer_Daemon
 
-The three computers involved (VEHICLE, server, and GCS) need to communicate
-with each other without human involvement. To do so, they need to share
-their public ssh keys with each other. On each machine, run
-'ssh-keygen -b 4096'. This should only be done once and will produce an 
+### Installing the Scripts
+
+Clone this repo to the home directory
+```
+git clone http://versatol.ddns.net/scm/td/gcstartstop.git
+```
+Only one manchine is required to operate the scripts but the scripts were written with 3 computers involved 
+* $VEHICLE
+* server
+* Laptop
+You will need to install the following on all machines in the system.
+```
+sudo apt install screen
+sudo apt install openssh-server
+```
+These machines need to communicate with each other without human involvement.
+To do so, they need to share their public ssh keys with each other. On each machine, run
+```
+ssh-keygen -b 4096
+```
+This should only be done once and will produce an 
 id_rsa.pub file in ~/.ssh that will look something like:
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQD6F6vKR3Nvb4zpyoO8zNgy1KIc4Ud7ezGucBabuAAC2JfmM4W7WpuZ6OLIawVyJSOcKAeOk36VNn1Sgm6Dhh7EOYW7eLbho9JDt96pq9v0kjJSuok4wM7deLFicI0PbltbWQZMXyelKH0oeRMGHzgmQdRv0L1rrV3njuIR649TWltoeNU1yqgyrTV/p+EGt2u3QZx4AVHs039KZd0Vf8mhNt2vmbfdalJtcW6LqAsmxOAHZYuMIoqNZ85mrxNIP4s2ZNkH8gR8/xsU2NKSHePI3VB43l+mn0gr+lj6Bg+/PCUMINQ0CFsJ4Y0MlyZAWLkR6zM6aNAZzlcySBFUA1eURNrsw6Nou8UFrdy6bIdeKNWh4nKJDpOURecoA/OOYq8BJ1X/YCiTlUuH5fyvn1vIKHEpOkGfNcgRWBLY+d//Qsc+SA2sBM+ECmMqpNxz1gtH6hGtt2Glqt49xAKf5y+9ypO7Ofnmw2CxJcEkuYRD+b8n3IcHUokOs8reubnq6k1fgzX5esveRbHtktigVpTSqAb5bKuBQnepRqxqBAjp0uhfZVgV6USSQS9sj556uwLLg95sU0/3zwygfqDEfz9tWy1dXNTMYHTNF7hVki30vnOMV3Rz/x2nHlHBVlbWYWoePaEcKmfGLWnOlFyrqzwP6n9K4mhmYT+r9ysmEgEFLw== gcs@GCS-BENCH-8400
-That line needs to be added to ~/.ssh/authorized_hosts file on the other two 
-machines. The easiest way to do that is copying and pasting between three
-terminal windows, each connected to one machine.
+```
+ssh-rsa AAAAB3NzaC1yc...bWYWoePaEcKmfGLWnOlFyrqzwP6n9K4mhmYT+r9ysmEgEFLw== gcs@GCS-BENCH-8400
+```
+That line needs to be added to ~/.ssh/authorized_key file on all the machines in the system.
+machines.
 
 Some commands run on the server require sudo and we don't want to be prompted
-for a password each time one is executed. Run 'sudo visudo' and add the
-following line to the *bottom* of the file:
-gcs     ALL=(ALL)     NOPASSWD:ALL
+for a password each time one is executed. Run 
+```
+sudo visudo
+```
+and add the following line to the *bottom* of the file:
+```
+$USER ALL=(ALL) NOPASSWD:ALL
+```
 
-Edit .bashrc on the three machines and add these 3 lines at the bottom:
+Edit .bashrc on the three machines and add these 4 lines at the bottom:
+```
 export ROS_MASTER_URI="http://<IP of VEHICLE>:11311"
 export ROS_HOSTNAME=<IP of machine>
-export PATH:$PATH:.
-Exit the editor. Type '. .bashrc' to inherit the new settings.
+export PATH:$PATH:
+export PATH:$PATH:/gcstartstop
+```
+Exit the editor. Type 
+'''source ~/.bashrc
+to inherit the new settings.
+
+### Other Stuff to fix later in the readme
+
+Make sure you always edit the config file to match your setup.
 
 Bring up QGC and go to general settings -> Video Source. Select "RTSP Video 
 Stream" from the Source dropdown. Enter 
