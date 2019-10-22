@@ -1,19 +1,19 @@
 # Ground Control Start and Stop Scripts for Tunnel Drone and Rover
 
 ## PACKAGE CONTENTS
-gcstart  -- Runs a system check followed by running the start scripts for the vehicle type specified in the config
-gcstop  -- Shuts down all tasks that were created when gcstart was run
-videostop  -- Stops video recording on server
-systemcheck  -- Checks system components for common problems
-config.sh  -- Users and IPs of the server, VEHICLE, and encoder.
-serverstart_$VEHICLE_TYPE.sh  -- Starts the server script for the VEHICLE_TYPE.
-start_$VEHICLE_TYPE.sh  -- Starts the script to run the commands for the VEHICLE_TYPE
-gcstart.desktop  -- GCStart, GCStop, and SystemCheck files for Launcher
-gcstop.desktop
-systemcheck.desktop
-dronefly.svg  -- Icons for the Launcher
-droneland.svg
-checkmark.svg
+*gcstart  -- Runs a system check followed by running the start scripts for the vehicle type specified in the config
+*gcstop  -- Shuts down all tasks that were created when gcstart was run
+*videostop  -- Stops video recording on server
+*systemcheck  -- Checks system components for common problems
+*config.sh  -- Users and IPs of the server, VEHICLE, and encoder.
+*serverstart_$VEHICLE_TYPE.sh  -- Starts the server script for the VEHICLE_TYPE.
+*start_$VEHICLE_TYPE.sh  -- Starts the script to run the commands for the VEHICLE_TYPE
+*gcstart.desktop  -- GCStart, GCStop, and SystemCheck files for Launcher
+*gcstop.desktop
+*systemcheck.desktop
+*dronefly.svg  -- Icons for the Launcher
+*droneland.svg
+*checkmark.svg
 
 ### Licensing
 This attribution is required for using the icons.
@@ -116,3 +116,21 @@ stopped manually by running ./videostop or automatically when gcstop is run.
 To end a mission, click on the GCStop icon in the launcher. Files will be moved 
 into a directory named for the date/time at the start of the mission and the 
 user will be notified when it is safe to power down or start another mission.
+
+## Windows (Expermental)
+
+### Install
+Install Putty
+### Running
+Set batch files with correct IP and user names you should only have to do this once per config change
+run batch files
+
+### Notes
+Running bash files though windows may take longer then it does on windows as you have to do the following.
+1. Execute a script that runs Putty
+2. Launch Putty
+3. open a SSH connection with the "server" element of the system
+3. run script on "server"
+
+Running the scripts on linux is much faster as the script is just executed.
+(Dakoda Neilson OCT 2019)
