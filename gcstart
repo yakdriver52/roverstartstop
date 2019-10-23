@@ -3,7 +3,7 @@
 # Get IPs and users
 . ./config.sh
 
-#./systemcheck gcstart ##### THIS WILL BE UNCOMMENTED WHEN SSH PASSWORD ISSUE IS RESLOVED
+./systemcheck gcstart
 
 if [ $? -ne 0 ]; #checking return value of system check exit state (1 or 0)
 then

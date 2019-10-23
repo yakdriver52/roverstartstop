@@ -1,19 +1,20 @@
 # Ground Control Start and Stop Scripts for Tunnel Drone and Rover
 
 ## PACKAGE CONTENTS
-gcstart  -- Runs a system check followed by running the start scripts for the vehicle type specified in the config
-gcstop  -- Shuts down all tasks that were created when gcstart was run
-videostop  -- Stops video recording on server
-systemcheck  -- Checks system components for common problems
-config.sh  -- Users and IPs of the server, VEHICLE, and encoder.
-serverstart_$VEHICLE_TYPE.sh  -- Starts the server script for the VEHICLE_TYPE.
-start_$VEHICLE_TYPE.sh  -- Starts the script to run the commands for the VEHICLE_TYPE
-gcstart.desktop  -- GCStart, GCStop, and SystemCheck files for Launcher
-gcstop.desktop
-systemcheck.desktop
-dronefly.svg  -- Icons for the Launcher
-droneland.svg
-checkmark.svg
+*gcstart  -- Runs a system check followed by running the start scripts for the vehicle type specified in the config
+*gcstop  -- Shuts down all tasks that were created when gcstart was run
+*videostop  -- Stops video recording on server
+*systemcheck  -- Checks system components for common problems
+*config.sh  -- Users and IPs of the server, VEHICLE, and encoder.
+*serverstart_$VEHICLE_TYPE.sh  -- Starts the server script for the VEHICLE_TYPE.
+*start_$VEHICLE_TYPE.sh  -- Starts the script to run the commands for the VEHICLE_TYPE
+*gcstart.desktop  -- GCStart, GCStop, and SystemCheck files for Launcher
+*gcstop.desktop
+*systemcheck.desktop
+#### Icons for the Launcher
+*dronefly.svg  
+*droneland.svg
+*checkmark.svg
 
 ### Licensing
 This attribution is required for using the icons.
@@ -32,6 +33,11 @@ Clone this repo to the home directory
 ```
 git clone http://versatol.ddns.net/scm/td/gcstartstop.git
 ```
+You should then copy the scripts in to the home directory of the system launching the scripts.
+The scripts requriement to be in the home directory will be fixed at a later date.
+You only need to have the scripts on the master computer, the other computers in the system needs the following setup
+
+### System Setup
 Only one manchine is required to operate the scripts but the scripts were written with 3 computers involved 
 * $VEHICLE
 * server
@@ -72,12 +78,77 @@ export PATH:$PATH:
 export PATH:$PATH:/gcstartstop
 ```
 Exit the editor. Type 
-'''source ~/.bashrc
+```
+source ~/.bashrc
+```
 to inherit the new settings.
+
+## Using the scripts
+
+Their are many ways to use the scripts, they can be run from the command line or be run from a launcher.
+### Ubuntu 18.04 Mate (prefered)
+* Right click on desktop
+* Create new launcher
+* Select script in the home folder
+* label launcher based on scripts named
+* Select ICON from the included SVGs
+
+### Stock Ubuntu
+The three desktop files need to be moved to ~/.local/share/applications on the 
+GCS. Once in place, use the File Browser to navigate to that directory and drag 
+them to the launcher on the left of the desktop. You will need to select
+View->Show Hidden Files to see the .local directory.
+
+### Windows (Expermental)
+
+### Terminal/ssh
+Navigate to the home folder and type
+```
+./script_name or ./script_name.sh
+```
+
+## Changing the Config
+Changing the config file is an easy way to reconfigure the scripts to work with the drone and the Rover
+as well as have the ability to specify the computers and IPs in the system. The config will have 3 main 
+variables to change.
+* USER
+* IP
+* VEHICLE_TYPE
+An example of a the config file will look like the following
+```
+#!/bin/bash
+
+VEHICLE_TYPE=rover
+VEHICLE_IP=192.168.1.172
+VEHICLE_USER=versatol
+
+#SERVER ON DRONE SUPPORTS VIDEO AND TELEOP
+#SERVER ON ROVER SUPPORTS ROS JOY
+SERVER_IP=192.168.1.172
+SERVER_USER=versatol
+
+ENCODER_IP=192.168.1.45
+GSTD_CLIENT="gstd-client -q -a $SERVER_IP"
+# Change this to zero when using an actual vehicle
+SIMULATED=0
+# Only one of these should be uncommented
+ENCODER=axis
+# ENCODER=nvidia
+
+red=`tput -Txterm-256color setaf 1`
+green=`tput -Txterm-256color setaf 2`
+reset=`tput -Txterm-256color sgr0`
+```
+Make sure you always edit the config file to match your setup.
+
+## Changing the Scripts
+
+
+
+
 
 ### Other Stuff to fix later in the readme
 
-Make sure you always edit the config file to match your setup.
 
 Bring up QGC and go to general settings -> Video Source. Select "RTSP Video 
 Stream" from the Source dropdown. Enter 
@@ -85,10 +156,7 @@ Stream" from the Source dropdown. Enter
 address of the encoder may be different. This only needs to be done once 
 unless a different VEHICLE is used (the encoder IP may be different). Exit QGC.
 
-The three desktop files need to be moved to ~/.local/share/applications on the 
-GCS. Once in place, use the File Browser to navigate to that directory and drag 
-them to the launcher on the left of the desktop. You will need to select
-View->Show Hidden Files to see the .local directory.
+
 
 Edit config.sh on GCS to match the IPs and users of the different machines. 
 This only needs to be done on the GCS and it will copy it to the server and

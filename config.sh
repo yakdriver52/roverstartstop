@@ -4,16 +4,8 @@
 # VEHICLE_USER=root ?????????????? richard's stuff
 # VEHICLE_TYPE=drone
 VEHICLE_TYPE=rover
-<<<<<<< Updated upstream
-VEHICLE_IP=192.168.1.26
-VEHICLE_USER=nvidia
-# IP address for TX2 will start with 192.168.1.21 and go though 192.168.1.27 currently (they are fixed)
-# Rover is currently 192.168.1.26
-# Drone will be 192.168.1.24
-=======
 VEHICLE_IP=192.168.1.172
 VEHICLE_USER=versatol
->>>>>>> Stashed changes
 
 #SERVER ON DRONE SUPPORTS VIDEO AND TELEOP
 #SERVER ON ROVER SUPPORTS ROS JOY
