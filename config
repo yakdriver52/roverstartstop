@@ -1,19 +1,18 @@
 #!/bin/bash
 
-# VEHICLE_IP=192.168.1.10 ??????????? richard's stuff
-# VEHICLE_USER=root ?????????????? richard's stuff
+# gcstartstop V2
+# Modified by Alayna Ivan, alayna.ivan@hotmail.com, 10/23/2019
+# Copyright VersaTOL, LLC 2019
+
 # VEHICLE_TYPE=drone
 VEHICLE_TYPE=rover
-VEHICLE_IP=192.168.1.26
-VEHICLE_USER=nvidia
-# IP address for TX2 will start with 192.168.1.21 and go though 192.168.1.27 currently (they are fixed)
-# Rover is currently 192.168.1.26
-# Drone will be 192.168.1.24
+VEHICLE_IP=192.168.1.172
+VEHICLE_USER=versatol
 
 #SERVER ON DRONE SUPPORTS VIDEO AND TELEOP
 #SERVER ON ROVER SUPPORTS ROS JOY
 SERVER_IP=192.168.1.172
-SERVER_USER=dakoda
+SERVER_USER=versatol
 
 ENCODER_IP=192.168.1.45
 GSTD_CLIENT="gstd-client -q -a $SERVER_IP"

@@ -1,0 +1,52 @@
+STARTUP REQUIREMENTS
+------------------------------------------------------------------------------------------------------------------------
+(1) config.sh / "header file" of configureable variables with other settings, shell execuatble type
+    This header file is responsible for all configurable options, all changes to be made here before executing startup
+    -sets IPs and users
+    -sets text display colors
+    -sets simulation
+    -sets vehicle type
+(2) gcstart.sh / shell executable file for main startup
+    This is the main startup file
+    -source config.sh configuration file (1)
+    -execute systemcheck.sh system preflight check file (3) ///////////////////////drone only?
+    -set the date and time according to a text file missionstartdt.text
+        -this file should be replaced with a proper system time stamp later
+    -execute start_"VEHICLE TYPE".sh (4)
+    -execute serverstart_"VEHICLE TYPE".sh (5)
+    -execute QGroundControl if the vehicle is a drone
+(3) systemcheck.sh / system preflight check file, shell execuatble type
+    -source config.sh configuration file (1)
+    -pings vehicle netowrk connection
+    -pings server
+    -ssh login server user
+    -ssh login aircraft user
+    -check drive space for video data
+        -prints aviable space
+    -check battery voltage
+    -exit return value and return to gcstart.sh (2)
+(4a) start_drone.sh / ros and other launch startups ////////////////// //unsure of drone requirements
+    -source config.sh configuration file (1)
+    -source ros kinetic
+    -launch ros - roscore
+    -launch realsense camera
+    -launch mavros px4
+    -record data - rosbag record
+    -FILE DOES NOT WORK. UNSURE OF DRONE REQUIREMENTS
+(4b) start_rover.sh / ros and other launch startups
+    -source config.sh configuration file (1)
+    -source ros melodic
+    -launch ros - roscore
+    -record data - rosbag record
+    -launch ros serial port for data connection 
+    -NO RETURNS. Runs all on separate terminals through screen as a Daemon.
+(5a) serverstart_drone.sh
+    -source config.sh configuration file (1)  
+    -start Gstreamer Daemon 
+(5b) serverstart_rover.sh
+    -source config.sh configuration file (1)
+    -source ros melodic
+    -run rosjoy for joy node. 
+    -NO RETURN. Runs on a separate terminal through screen as a Daemon
+------------------------------------------------------------------------------------------------------------------------
+Created by Alayna Ivan, alayna.ivan@hotmail.com, 10/23/2019

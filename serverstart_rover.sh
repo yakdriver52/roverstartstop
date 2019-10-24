@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# gcstartstop V2
+# Created by Alayna Ivan, alayna.ivan@hotmail.com, 10/23/2019
+# Copyright VersaTOL, LLC 2019
+
 . ./config.sh
 . /opt/ros/melodic/setup.bash
 
