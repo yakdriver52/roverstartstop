@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# VEHICLE_IP=192.168.1.10 ??????????? richard's stuff
-# VEHICLE_USER=root ?????????????? richard's stuff
+# gcstartstop V2
+# Modified by Alayna Ivan, alayna.ivan@hotmail.com, 10/23/2019
+# Copyright VersaTOL, LLC 2019
+
 # VEHICLE_TYPE=drone
 VEHICLE_TYPE=rover
 VEHICLE_IP=192.168.1.172

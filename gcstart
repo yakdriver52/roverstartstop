@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# gcstartstop V2
+# Modified by Alayna Ivan, alayna.ivan@hotmail.com, 10/23/2019
+# Copyright VersaTOL, LLC 2019
+
 # Get IPs and users
 . ./config.sh
 
@@ -33,7 +37,7 @@ scp serverstart_$VEHICLE_TYPE.sh $SERVER_USER@$SERVER_IP:serverstart_$VEHICLE_TY
 ssh $SERVER_USER@$SERVER_IP "./serverstart_$VEHICLE_TYPE.sh" ### this was completely missing from the origional code
 
 # Start QGC in background
-nohup ./QGroundControl.AppImage >/dev/null 2>/dev/null &
+nohup ./QGroundControl.AppImage >/dev/null 2>/dev/null & #### needs if then for drone
 
 echo
 echo "Press ENTER to exit this window (safe to do while flying)."

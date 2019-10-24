@@ -1,20 +1,20 @@
 # Ground Control Start and Stop Scripts for Tunnel Drone and Rover
 
 ## PACKAGE CONTENTS
-*gcstart  -- Runs a system check followed by running the start scripts for the vehicle type specified in the config
-*gcstop  -- Shuts down all tasks that were created when gcstart was run
-*videostop  -- Stops video recording on server
-*systemcheck  -- Checks system components for common problems
-*config.sh  -- Users and IPs of the server, VEHICLE, and encoder.
-*serverstart_$VEHICLE_TYPE.sh  -- Starts the server script for the VEHICLE_TYPE.
-*start_$VEHICLE_TYPE.sh  -- Starts the script to run the commands for the VEHICLE_TYPE
-*gcstart.desktop  -- GCStart, GCStop, and SystemCheck files for Launcher
-*gcstop.desktop
-*systemcheck.desktop
+* gcstart  -- Runs a system check followed by running the start scripts for the vehicle type specified in the config
+* gcstop  -- Shuts down all tasks that were created when gcstart was run
+* videostop  -- Stops video recording on server
+* systemcheck  -- Checks system components for common problems
+* config.sh  -- Users and IPs of the server, VEHICLE, and encoder.
+* serverstart_$VEHICLE_TYPE.sh  -- Starts the server script for the VEHICLE_TYPE.
+* start_$VEHICLE_TYPE.sh  -- Starts the script to run the commands for the VEHICLE_TYPE
+* gcstart.desktop  -- GCStart, GCStop, and SystemCheck files for Launcher
+* gcstop.desktop
+* systemcheck.desktop
 #### Icons for the Launcher
-*dronefly.svg  
-*droneland.svg
-*checkmark.svg
+* dronefly.svg  
+* droneland.svg
+* checkmark.svg
 
 ### Licensing
 This attribution is required for using the icons.
