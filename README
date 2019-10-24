@@ -101,6 +101,22 @@ View->Show Hidden Files to see the .local directory.
 
 ### Windows (Expermental)
 
+### Install
+Install Putty
+### Running
+Set batch files with correct IP and user names you should only have to do this once per config change
+run batch files (work in progress)
+
+### Notes
+Running bash files though windows may take longer then it does on windows as you have to do the following.
+1. Execute a script that runs Putty
+2. Launch Putty
+3. open a SSH connection with the "server" element of the system
+3. run script on "server"
+
+Running the scripts on linux is much faster as the script is just executed.
+(Dakoda Neilson OCT 2019)
+
 ### Terminal/ssh
 Navigate to the home folder and type
 ```
