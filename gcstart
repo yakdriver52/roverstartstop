@@ -2,7 +2,6 @@
 
 # gcstartstop V2
 # Modified by Alayna Ivan, alayna.ivan@hotmail.com, 10/23/2019
-# Copyright VersaTOL, LLC 2019
 
 # Get IPs and users
 . ./config.sh
@@ -18,15 +17,6 @@ fi
 DATETIME=`date +%Y-%m-%d-%H-%M`
 echo $DATETIME >missionstartdt #creates file missionstartdt for source later
 
-# Start ROS on VEHICLE
-echo "Initializing VEHICLE..."
-scp missionstartdt $VEHICLE_USER@$VEHICLE_IP:missionstartdt >/dev/null
-scp config.sh $VEHICLE_USER@$VEHICLE_IP:config.sh >/dev/null
-scp start_$VEHICLE_TYPE.sh $VEHICLE_USER@$VEHICLE_IP:start_$VEHICLE_TYPE.sh >/dev/null
-ssh $VEHICLE_USER@$VEHICLE_IP "./start_$VEHICLE_TYPE.sh" #rosstart.sh was replaced by start_$VEHICLE_TYPE.sh (rover or drone as set in config.sh)
-sleep 2
-echo "${green}Done.${reset}"
-
 echo "Initializing server..."
 # Clean up any old files that may still be present from a failed mission
 ssh $SERVER_USER@$SERVER_IP "rm *.bag *.mp4 >/dev/null 2>/dev/null" >/dev/null
@@ -34,7 +24,19 @@ ssh $SERVER_USER@$SERVER_IP "rm *.bag *.mp4 >/dev/null 2>/dev/null" >/dev/null
 scp missionstartdt $SERVER_USER@$SERVER_IP:missionstartdt >/dev/null
 scp config.sh $SERVER_USER@$SERVER_IP:config.sh >/dev/null
 scp serverstart_$VEHICLE_TYPE.sh $SERVER_USER@$SERVER_IP:serverstart_$VEHICLE_TYPE.sh >/dev/null
+scp roscore.sh $SERVER_USER@$SERVER_IP:roscore.sh >/dev/null
+scp joy.sh $SERVER_USER@$SERVER_IP:joy.sh >/dev/null
 ssh $SERVER_USER@$SERVER_IP "./serverstart_$VEHICLE_TYPE.sh" ### this was completely missing from the origional code
+
+# Start ROS on VEHICLE
+echo "Initializing VEHICLE..."
+scp missionstartdt $VEHICLE_USER@$VEHICLE_IP:missionstartdt >/dev/null
+scp config.sh $VEHICLE_USER@$VEHICLE_IP:config.sh >/dev/null
+scp start_$VEHICLE_TYPE.sh $VEHICLE_USER@$VEHICLE_IP:start_$VEHICLE_TYPE.sh >/dev/null
+scp mavros.sh $VEHICLE_USER@$VEHICLE_IP:mavros.sh >/dev/null
+ssh $VEHICLE_USER@$VEHICLE_IP "./start_$VEHICLE_TYPE.sh" #rosstart.sh was replaced by start_$VEHICLE_TYPE.sh (rover or drone as set in config.sh)
+sleep 2
+echo "${green}Done.${reset}"
 
 # Start QGC in background
 nohup ./QGroundControl.AppImage >/dev/null 2>/dev/null & #### needs if then for drone
